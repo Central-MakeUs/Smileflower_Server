@@ -26,20 +26,20 @@ public class ProfileService {
         this.s3Service = s3Service;
     }
 
-    public UploadImageResponse deleteImage(String email){
+    public UploadImageResponse deleteImage(int userIdx){
         //delete file
-        Profile user = profileRepository.findByEmail(email)
+        Profile user = profileRepository.findByIdx(userIdx)
                 .orElseThrow(() -> new NotFoundException("cannot find user"));
         s3Service.deleteFile(user.getUserImageUrl());
 
-        deleteImageUrlByEmail(email);
+        deleteImageUrlByIdx(userIdx);
 
         return new UploadImageResponse(null);
     }
 
-    public UploadImageResponse getUploadImage(String email){
+    public UploadImageResponse getUploadImage(int userIdx){
         //delete file
-        Profile user = profileRepository.findByEmail(email)
+        Profile user = profileRepository.findByIdx(userIdx)
                 .orElseThrow(() -> new NotFoundException("cannot find user"));
 
         if(user.getUserImageUrl()!=null) {
@@ -50,10 +50,10 @@ public class ProfileService {
     }
 
 
-    public UploadImageResponse uploadImage(MultipartFile file,String email){
+    public UploadImageResponse uploadImage(MultipartFile file,int userIdx){
 
         //delete pre file
-        Profile user = profileRepository.findByEmail(email)
+        Profile user = profileRepository.findByIdx(userIdx)
                 .orElseThrow(() -> new NotFoundException("cannot find user"));
         if(user.getUserImageUrl()!=null){
             s3Service.deleteFile(user.getUserImageUrl());
@@ -66,7 +66,7 @@ public class ProfileService {
 
         try(InputStream inputStream = file.getInputStream()){
             s3Service.uploadFile(inputStream,objectMetadata,fileName);
-            updateImageUrlByEmail(email,fileName);
+            updateImageUrlByIdx(userIdx,fileName);
         }catch(IOException e){
             throw new IllegalArgumentException(String.format("파일 변환 중 에러가 발생하였습니다 (%s)", file.getOriginalFilename()));
         }
@@ -77,8 +77,16 @@ public class ProfileService {
         return profileRepository.deleteImageUrlByEmail(email);
     }
 
+    private int deleteImageUrlByIdx(int userIdx){
+        return profileRepository.deleteImageUrlByIdx(userIdx);
+    }
+
     private int updateImageUrlByEmail(String email,String fileName){
         return profileRepository.updateImageUrlByEmail(email,fileName);
+    }
+
+    private int updateImageUrlByIdx(int userIdx,String fileName){
+        return profileRepository.updateImageUrlByIdx(userIdx,fileName);
     }
 
     private String createFileName(String originalFileName){
@@ -94,7 +102,7 @@ public class ProfileService {
         }
     }
 
-    public ProfileResponse findProfile(Long userIdx) {
+    public ProfileResponse findProfile(int userIdx) {
         List<FlagResponse> flagsResponse = profileRepository.findFlagsByIdx(userIdx);
         List<Picture> pictures = profileRepository.findPicturesByIdx(userIdx);
         List<PictureResponse> picturesResponse = new ArrayList<PictureResponse>();
@@ -114,7 +122,7 @@ public class ProfileService {
         return profileResponse;
     }
 
-    public PostsResponse findFlags(Long userIdx) {
+    public PostsResponse findFlags(int userIdx) {
         List<FlagResponse> flagsResponse = profileRepository.findFlagsByIdx(userIdx);
         List<Picture> pictures = profileRepository.findPicturesByIdx(userIdx);
         List<PictureResponse> picturesResponse = new ArrayList<PictureResponse>();
@@ -126,7 +134,7 @@ public class ProfileService {
 
     }
 
-    public List<FlagsForMapResponse> findFlagsForMap(Long userIdx) {
+    public List<FlagsForMapResponse> findFlagsForMap(int userIdx) {
         return profileRepository.findFlagsForMapByIdx(userIdx);
     }
 
@@ -135,7 +143,7 @@ public class ProfileService {
 
     }
 
-    public ReportFlagResponse reportFlag(Long userIdx,Long flagIdx) {
+    public ReportFlagResponse reportFlag(int userIdx,Long flagIdx) {
         return new ReportFlagResponse(flagIdx,profileRepository.reportCountByIdx(profileRepository.report(flagIdx,userIdx)));
     }
 
@@ -144,11 +152,23 @@ public class ProfileService {
         return new DeletePictureResponse(profileRepository.deletePictureByIdx(pictureIdx));
     }
 
-    public int createPicture(Long userIdx,String imageUrl) {
-        return profileRepository.createPicture(userIdx, imageUrl);
+    public CreatePictureResponse createPicture(int userIdx,MultipartFile file) {
+        String fileName = createFileName(file.getOriginalFilename());
+
+        ObjectMetadata objectMetadata = new ObjectMetadata();
+
+        objectMetadata.setContentType(file.getContentType());
+
+        try (InputStream inputStream = file.getInputStream()) {
+            s3Service.uploadFile(inputStream, objectMetadata, fileName);
+
+        } catch (IOException e) {
+            throw new IllegalArgumentException(String.format("파일 변환 중 에러가 발생하였습니다 (%s)", file.getOriginalFilename()));
+        }
+        return new CreatePictureResponse(profileRepository.createPicture(userIdx, fileName));
     }
 
-    public ResultResponse findResult(Long userIdx) {
+    public ResultResponse findResult(int userIdx) {
         return new ResultResponse(profileRepository.findFlagCountByIdx(userIdx));
     }
 }

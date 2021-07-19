@@ -3,21 +3,21 @@ package com.smileflower.santa.profile.model.dto;
 import java.util.List;
 
 public class FlagsResponse {
-    private Long userIdx;
+    private int userIdx;
     private String name;
     private List<FlagResponse> flags;
 
-    public FlagsResponse(Long userIdx, String name, List<FlagResponse> flags) {
+    public FlagsResponse(int userIdx, String name, List<FlagResponse> flags) {
         this.userIdx = userIdx;
         this.name = name;
         this.flags = flags;
     }
 
-    public Long getUserIdx() {
+    public int getUserIdx() {
         return userIdx;
     }
 
-    public void setUserIdx(Long userIdx) {
+    public void setUserIdx(int userIdx) {
         this.userIdx = userIdx;
     }
 

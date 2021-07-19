@@ -5,7 +5,7 @@ import com.smileflower.santa.profile.model.domain.Picture;
 import java.util.List;
 
 public class ProfileResponse {
-    private Long userIdx;
+    private int userIdx;
     private String name;
     private int level;
     private int flagCount;
@@ -13,7 +13,7 @@ public class ProfileResponse {
     private List<FlagResponse> flags;
     private List<PictureResponse> pictures;
 
-    public ProfileResponse(Long userIdx, String name, int level, int flagCount, int postCount, List<FlagResponse> flags,List<PictureResponse> pictures) {
+    public ProfileResponse(int userIdx, String name, int level, int flagCount, int postCount, List<FlagResponse> flags,List<PictureResponse> pictures) {
         this.userIdx = userIdx;
         this.name = name;
         this.level = level;
@@ -23,11 +23,11 @@ public class ProfileResponse {
         this.pictures = pictures;
     }
 
-    public Long getUserIdx() {
+    public int getUserIdx() {
         return userIdx;
     }
 
-    public void setUserIdx(Long userIdx) {
+    public void setUserIdx(int userIdx) {
         this.userIdx = userIdx;
     }
 

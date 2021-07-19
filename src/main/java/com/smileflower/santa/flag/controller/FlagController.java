@@ -2,8 +2,8 @@ package com.smileflower.santa.flag.controller;
 
 import com.smileflower.santa.apple.utils.AppleJwtUtils;
 import com.smileflower.santa.exception.ApiResult;
+import com.smileflower.santa.flag.model.UploadImageResponse;
 import com.smileflower.santa.flag.service.FlagService;
-import com.smileflower.santa.profile.model.dto.UploadImageResponse;
 import com.smileflower.santa.profile.service.ProfileService;
 import com.smileflower.santa.utils.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,10 +24,8 @@ public class FlagController {
     JwtService jwtService;
 
     @PostMapping("/upload/{mountainIdx}")
-    public ApiResult<UploadImageResponse> uploadImage(@RequestHeader(value = "REFRESH-TOKEN")
-                                                              String token, @RequestPart(required = false) MultipartFile file, @PathVariable("mountainIdx") Long mountainIdx) {
-
-        //int userIdx=jwtService.getUserIdx();
+    public ApiResult<UploadImageResponse> uploadImage(@RequestPart(required = false) MultipartFile file, @PathVariable("mountainIdx") Long mountainIdx) {
+        int userIdx = jwtService.getUserIdxV2();
 
         return ApiResult.OK(
                 flagService.uploadImage(file,userIdx, mountainIdx)

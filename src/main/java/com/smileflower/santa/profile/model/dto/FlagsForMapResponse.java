@@ -1,7 +1,7 @@
 package com.smileflower.santa.profile.model.dto;
 
 public class FlagsForMapResponse {
-    private Long userIdx;
+    private int userIdx;
     private Long mountainIdx;
     private String imageUrl;
     private double latitude;
@@ -9,7 +9,7 @@ public class FlagsForMapResponse {
     private int flagCount;
     private String address;
 
-    public FlagsForMapResponse(Long userIdx, Long mountainIdx, String imageUrl, double latitude, double longitude, int flagCount,String address) {
+    public FlagsForMapResponse(int userIdx, Long mountainIdx, String imageUrl, double latitude, double longitude, int flagCount,String address) {
         this.userIdx = userIdx;
         this.mountainIdx = mountainIdx;
         this.imageUrl = imageUrl;
@@ -19,11 +19,11 @@ public class FlagsForMapResponse {
         this.address = address;
     }
 
-    public Long getUserIdx() {
+    public int getUserIdx() {
         return userIdx;
     }
 
-    public void setUserIdx(Long userIdx) {
+    public void setUserIdx(int userIdx) {
         this.userIdx = userIdx;
     }
 

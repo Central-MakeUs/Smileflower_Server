@@ -32,7 +32,7 @@ public class ProfileJdbcRepository implements ProfileRepository {
         String param = email;
         List<Profile> user = this.jdbcTemplate.query(query,
                 (rs, rowNum) -> new Profile(
-                        rs.getLong("userIdx"),
+                        rs.getInt("userIdx"),
                         new Email(rs.getString("emailId")),
                         null,
                         rs.getString("userImageUrl"),
@@ -45,12 +45,12 @@ public class ProfileJdbcRepository implements ProfileRepository {
     }
 
     @Override
-    public Optional<Profile> findByIdx(Long userIdx) {
+    public Optional<Profile> findByIdx(int userIdx) {
         String query = "select * from user where userIdx =?";
-        Long param = userIdx;
+        int param = userIdx;
         List<Profile> user = this.jdbcTemplate.query(query,
                 (rs, rowNum) -> new Profile(
-                        rs.getLong("userIdx"),
+                        rs.getInt("userIdx"),
                         new Email(rs.getString("emailId")),
                         null,
                         rs.getString("userImageUrl"),
@@ -63,7 +63,7 @@ public class ProfileJdbcRepository implements ProfileRepository {
     }
 
     @Override
-    public String findNameByIdx(Long userIdx) {
+    public String findNameByIdx(int userIdx) {
         String query = "select name from user where userIdx =?";
         String name = this.jdbcTemplate.queryForObject(query,new Object[]{userIdx},String.class);
 
@@ -71,14 +71,14 @@ public class ProfileJdbcRepository implements ProfileRepository {
     }
 
     @Override
-    public List<FlagResponse> findFlagsByIdx(Long userIdx) {
+    public List<FlagResponse> findFlagsByIdx(int userIdx) {
         String query = "SELECT a.flagIdx, a.userIdx, a.mountainIdx, a.createdAt, a.pictureUrl, b.cnt, b.name from flag a left join (Select ANY_VALUE(f.userIdx) as userIdx, ANY_VALUE(f.mountainIdx) as mountainIdx, COUNT(f.mountainIdx) as cnt, m.name  from flag f LEFT JOIN mountain m ON f.mountainIdx = m.mountainIdx group by f.mountainIdx) b on a.mountainIdx = b.mountainIdx where a.useridx = ?";
         Object[] param = new Object[]{userIdx};
         List<FlagResponse> flags = this.jdbcTemplate.query(query,param,(rs,rowNum) -> new FlagResponse(
                 rs.getLong("flagIdx"),
-                rs.getLong("userIdx"),
+                rs.getInt("userIdx"),
                 rs.getLong("mountainIdx"),
-                rs.getTimestamp("createAt").toLocalDateTime(),
+                rs.getTimestamp("createdAt").toLocalDateTime(),
                 rs.getString("pictureUrl"),
                 rs.getInt("cnt"),
                 rs.getString("name")
@@ -87,11 +87,11 @@ public class ProfileJdbcRepository implements ProfileRepository {
     }
 
     @Override
-    public List<FlagsForMapResponse> findFlagsForMapByIdx(Long userIdx) {
+    public List<FlagsForMapResponse> findFlagsForMapByIdx(int userIdx) {
         String query = "Select ANY_VALUE(f.userIdx) as userIdx, ANY_VALUE(f.mountainIdx) as mountainIdx, COUNT(f.mountainIdx) as cnt, m.name, m.imageUrl, m.lat, m.lng, m.address from flag f LEFT JOIN mountain m ON f.mountainIdx = m.mountainIdx where f.useridx = ? group by f.mountainIdx";
         Object[] param = new Object[]{userIdx};
         List<FlagsForMapResponse> flags = this.jdbcTemplate.query(query,param,(rs,rowNum) -> new FlagsForMapResponse(
-                rs.getLong("userIdx"),
+                rs.getInt("userIdx"),
                 rs.getLong("mountainIdx"),
                 rs.getString("imageUrl"),
                 rs.getDouble("lat"),
@@ -103,14 +103,14 @@ public class ProfileJdbcRepository implements ProfileRepository {
     }
 
     @Override
-    public List<Picture> findPicturesByIdx(Long userIdx) {
+    public List<Picture> findPicturesByIdx(int userIdx) {
         String query = "select * from picture where userIdx =?";
         Object[] param = new Object[]{userIdx};
         List<Picture> pictures = this.jdbcTemplate.query(query,param,(rs,rowNum) -> new Picture(
                 rs.getLong("pictureIdx"),
-                rs.getLong("userIdx"),
-                rs.getString("imageUrl"),
-                rs.getTimestamp("createAt").toLocalDateTime(),
+                rs.getInt("userIdx"),
+                rs.getString("imgUrl"),
+                rs.getTimestamp("createdAt").toLocalDateTime(),
                 rs.getTimestamp("updatedAt").toLocalDateTime(),
                 rs.getString("status")
         ));
@@ -118,8 +118,8 @@ public class ProfileJdbcRepository implements ProfileRepository {
     }
 
     @Override
-    public int createPicture(Long userIdx,String imageUrl) {
-        String query = "insert into picture (userIdx, imageUrl) VALUES (?,?)";
+    public int createPicture(int userIdx,String imageUrl) {
+        String query = "insert into picture (userIdx, imgUrl) VALUES (?,?)";
         Object[] params = new Object[]{userIdx,imageUrl};
         this.jdbcTemplate.update(query, params);
 
@@ -128,7 +128,7 @@ public class ProfileJdbcRepository implements ProfileRepository {
     }
 
     @Override
-    public int findFlagCountByIdx(Long userIdx) {
+    public int findFlagCountByIdx(int userIdx) {
         return this.jdbcTemplate.queryForObject("SELECT COUNT(*) FROM flag WHERE userIdx = ?",new Object[]{userIdx}, Integer.class);
     }
 
@@ -149,7 +149,7 @@ public class ProfileJdbcRepository implements ProfileRepository {
     }
 
     @Override
-    public Long report(Long flagIdx, Long userIdx) {
+    public Long report(Long flagIdx, int userIdx) {
         String query = "insert into picture (userIdx, flagIdx) VALUES (?,?)";
         Object[] params = new Object[]{userIdx,flagIdx};
         this.jdbcTemplate.update(query, params);
@@ -170,7 +170,7 @@ public class ProfileJdbcRepository implements ProfileRepository {
     }
 
     @Override
-    public int updateImageUrlByIdx(Long userIdx, String filename) {
+    public int updateImageUrlByIdx(int userIdx, String filename) {
         String query = "update user set userImageUrl = ? where userIdx = ? ";
         Object[] params = new Object[]{filename, userIdx};
         return this.jdbcTemplate.update(query,params);
@@ -184,9 +184,9 @@ public class ProfileJdbcRepository implements ProfileRepository {
     }
 
     @Override
-    public int deleteImageUrlByIdx(Long userIdx) {
+    public int deleteImageUrlByIdx(int userIdx) {
         String query = "update user set userImageUrl = null where userIdx = ? ";
-        Long param = userIdx;
+        int param = userIdx;
         return this.jdbcTemplate.update(query,param);
     }
 

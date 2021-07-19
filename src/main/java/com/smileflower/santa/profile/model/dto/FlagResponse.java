@@ -4,14 +4,14 @@ import java.time.LocalDateTime;
 
 public class FlagResponse {
     private Long flagIdx;
-    private Long userIdx;
+    private int userIdx;
     private Long mountainIdx;
     private LocalDateTime createdAt;
     private String pictureUrl;
     private int flagCount;
     private String name;
 
-    public FlagResponse(Long flagIdx, Long userIdx, Long mountainIdx,  LocalDateTime createdAt, String pictureUrl,int flagCount,String name) {
+    public FlagResponse(Long flagIdx, int userIdx, Long mountainIdx,  LocalDateTime createdAt, String pictureUrl,int flagCount,String name) {
         this.flagIdx = flagIdx;
         this.userIdx = userIdx;
         this.mountainIdx = mountainIdx;
@@ -29,11 +29,11 @@ public class FlagResponse {
         this.flagIdx = flagIdx;
     }
 
-    public Long getUserIdx() {
+    public int getUserIdx() {
         return userIdx;
     }
 
-    public void setUserIdx(Long userIdx) {
+    public void setUserIdx(int userIdx) {
         this.userIdx = userIdx;
     }
 

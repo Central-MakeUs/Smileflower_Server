@@ -17,8 +17,8 @@ public class FlagJdbcRepository implements FlagRepository{
     }
 
     @Override
-    public int updateImageUrlByIdx(Long userIdx, Long mountainIdx, String filename) {
-        String query = "insert into flags (userIdx, mountainIdx,pictureUrl) VALUES (?,?,?)";
+    public int updateImageUrlByIdx(int userIdx, Long mountainIdx, String filename) {
+        String query = "insert into flag (userIdx, mountainIdx,pictureUrl) VALUES (?,?,?)";
         Object[] params = new Object[]{userIdx,mountainIdx,filename};
         this.jdbcTemplate.update(query, params);
         String lastInsertIdQuery = "select last_insert_id()";

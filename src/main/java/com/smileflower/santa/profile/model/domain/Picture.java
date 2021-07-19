@@ -5,14 +5,14 @@ import java.time.LocalDateTime;
 public class Picture {
     //Member Field
     private final Long pictureIdx;
-    private Long userIdx;
+    private int userIdx;
     private String imageUrl;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private String status;
 
     //Constructor
-    public Picture(Long pictureIdx, Long userIdx, String imageUrl, LocalDateTime createdAt, LocalDateTime updatedAt, String status) {
+    public Picture(Long pictureIdx, int userIdx, String imageUrl, LocalDateTime createdAt, LocalDateTime updatedAt, String status) {
         this.pictureIdx = pictureIdx;
         this.userIdx = userIdx;
         this.imageUrl = imageUrl;
@@ -21,7 +21,7 @@ public class Picture {
         this.status = status;
     }
 
-    public Picture(Long userIdx, String imageUrl) {
+    public Picture(int userIdx, String imageUrl) {
         this(null,userIdx,imageUrl,null,null,"T");
     }
 
@@ -30,7 +30,7 @@ public class Picture {
         return pictureIdx;
     }
 
-    public Long getUserIdx() {
+    public int getUserIdx() {
         return userIdx;
     }
 

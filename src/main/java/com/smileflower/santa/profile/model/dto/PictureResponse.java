@@ -4,11 +4,11 @@ import java.time.LocalDateTime;
 
 public class PictureResponse {
     private Long pictureIdx;
-    private Long userIdx;
+    private int userIdx;
     private String imageUrl;
     private LocalDateTime createdAt;
 
-    public PictureResponse(Long pictureIdx, Long userIdx, String imageUrl, LocalDateTime createdAt) {
+    public PictureResponse(Long pictureIdx, int userIdx, String imageUrl, LocalDateTime createdAt) {
         this.pictureIdx = pictureIdx;
         this.userIdx = userIdx;
         this.imageUrl = imageUrl;
@@ -23,11 +23,11 @@ public class PictureResponse {
         this.pictureIdx = pictureIdx;
     }
 
-    public Long getUserIdx() {
+    public int getUserIdx() {
         return userIdx;
     }
 
-    public void setUserIdx(Long userIdx) {
+    public void setUserIdx(int userIdx) {
         this.userIdx = userIdx;
     }
 

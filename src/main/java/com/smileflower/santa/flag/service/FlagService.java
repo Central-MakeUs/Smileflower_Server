@@ -4,6 +4,7 @@ import com.amazonaws.services.kms.model.NotFoundException;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.smileflower.santa.flag.repository.FlagRepository;
 import com.smileflower.santa.flag.model.UploadImageResponse;
+import com.smileflower.santa.profile.service.S3Service;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -23,7 +24,7 @@ public class FlagService {
     }
 
 
-    public UploadImageResponse uploadImage(MultipartFile file, Long userIdx, Long mountainIdx) {
+    public UploadImageResponse uploadImage(MultipartFile file, int userIdx, Long mountainIdx) {
 
         String fileName = createFileName(file.getOriginalFilename());
 
@@ -40,7 +41,7 @@ public class FlagService {
         return new UploadImageResponse(s3Service.getFileUrl(fileName));
     }
 
-    private int updateImageUrlByIdx(Long userIdx,Long mountainIdx,String fileName){
+    private int updateImageUrlByIdx(int userIdx,Long mountainIdx,String fileName){
         return flagRepository.updateImageUrlByIdx(userIdx,mountainIdx,fileName);
     }
 
