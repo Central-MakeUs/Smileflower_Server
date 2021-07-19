@@ -88,14 +88,14 @@ public class ProfileJdbcRepository implements ProfileRepository {
 
     @Override
     public List<FlagsForMapResponse> findFlagsForMapByIdx(int userIdx) {
-        String query = "Select ANY_VALUE(f.userIdx) as userIdx, ANY_VALUE(f.mountainIdx) as mountainIdx, COUNT(f.mountainIdx) as cnt, m.name, m.imageUrl, m.lat, m.lng, m.address from flag f LEFT JOIN mountain m ON f.mountainIdx = m.mountainIdx where f.useridx = ? group by f.mountainIdx";
+        String query = "Select ANY_VALUE(f.userIdx) as userIdx, ANY_VALUE(f.mountainIdx) as mountainIdx, COUNT(f.mountainIdx) as cnt, m.name, m.imageUrl, m.latitude, m.longitude, m.address from flag f LEFT JOIN mountain m ON f.mountainIdx = m.mountainIdx where f.useridx = ? group by f.mountainIdx";
         Object[] param = new Object[]{userIdx};
         List<FlagsForMapResponse> flags = this.jdbcTemplate.query(query,param,(rs,rowNum) -> new FlagsForMapResponse(
                 rs.getInt("userIdx"),
                 rs.getLong("mountainIdx"),
                 rs.getString("imageUrl"),
-                rs.getDouble("lat"),
-                rs.getDouble("lng"),
+                rs.getDouble("latitude"),
+                rs.getDouble("longitude"),
                 rs.getInt("cnt"),
                 rs.getString("address")
         ));
