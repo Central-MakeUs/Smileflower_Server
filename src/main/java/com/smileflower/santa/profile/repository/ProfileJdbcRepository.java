@@ -1,13 +1,13 @@
 package com.smileflower.santa.profile.repository;
 
 
-import com.smileflower.santa.profile.model.domain.Email;
-import com.smileflower.santa.profile.model.domain.Profile;
+import com.smileflower.santa.profile.model.domain.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -40,6 +40,82 @@ public class ProfileJdbcRepository implements ProfileRepository {
                 param);
 
         return ofNullable(user.isEmpty() ? null : user.get(0));
+    }
+
+    @Override
+    public Optional<String> findNameByIdx(Long userIdx) {
+        String query = "select name from user where userIdx =?";
+        String name = this.jdbcTemplate.queryForObject(query,new Object[]{userIdx},String.class);
+
+        return ofNullable(name==null ? null : name);
+    }
+
+    @Override
+    public Optional<List<Flag>> findFlagsByIdx(Long userIdx) {
+        String query = "select flag.*, mountain.name, COUNT(flag.mountainIdx) As cnt from flag Left JOIN mountain ON flag.mountainIdx = mountain.mountainIdx group by flag.mountainIdx where userIdx =?";
+        Object[] param = new Object[]{userIdx};
+        List<Flag> flags = this.jdbcTemplate.query(query,param,(rs,rowNum) -> new Flag(
+                rs.getLong("flagIdx"),
+                rs.getLong("userIdx"),
+                rs.getLong("mountainIdx"),
+                rs.getTimestamp("createAt").toLocalDateTime(),
+                rs.getTimestamp("updatedAt").toLocalDateTime(),
+                rs.getString("status"),
+                rs.getString("pictureUrl")
+        ));
+        return ofNullable(flags.isEmpty() ? null : flags);
+    }
+
+    @Override
+    public Optional<List<Picture>> findPicturesByIdx(Long userIdx) {
+        String query = "select * from picture where userIdx =?";
+        Object[] param = new Object[]{userIdx};
+        List<Picture> pictures = this.jdbcTemplate.query(query,param,(rs,rowNum) -> new Picture(
+                rs.getLong("pictureIdx"),
+                rs.getLong("userIdx"),
+                rs.getString("imageUrl"),
+                rs.getTimestamp("createAt").toLocalDateTime(),
+                rs.getTimestamp("updatedAt").toLocalDateTime(),
+                rs.getString("status")
+        ));
+        return ofNullable(pictures.isEmpty() ? null : pictures);
+    }
+
+    @Override
+    public int createPicture(Long userIdx,String imageUrl) {
+        String query = "insert into picture (userIdx, imageUrl) VALUES (?,?)";
+        Object[] params = new Object[]{userIdx,imageUrl};
+        this.jdbcTemplate.update(query, params);
+
+        String lastInsertIdQuery = "select last_insert_id()";
+        return this.jdbcTemplate.queryForObject(lastInsertIdQuery,int.class);
+    }
+
+    @Override
+    public int findFlagCountByIdx(Long userIdx) {
+        return 0;
+    }
+
+    @Override
+    public boolean deleteFlagByIdx(Long flagIdx) {
+        String query = "delete from flag where flagIdx = ?";
+        Object[] params = new Object[]{flagIdx};
+        int changedCnt = this.jdbcTemplate.update(query,params);
+        return changedCnt==1 ? true : false;
+    }
+
+    @Override
+    public int report(Long flagIdx, Long userIdx) {
+        String query = "insert into picture (userIdx, flagIdx) VALUES (?,?)";
+        Object[] params = new Object[]{userIdx,flagIdx};
+        this.jdbcTemplate.update(query, params);
+        String lastInsertIdQuery = "select last_insert_id()";
+        return this.jdbcTemplate.queryForObject(lastInsertIdQuery,int.class);
+    }
+
+    @Override
+    public int reportCountByIdx(Long flagIdx) {
+        return 0;
     }
 
     @Override

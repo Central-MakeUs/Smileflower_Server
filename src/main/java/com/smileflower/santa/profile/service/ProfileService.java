@@ -2,18 +2,14 @@ package com.smileflower.santa.profile.service;
 
 import com.amazonaws.services.kms.model.NotFoundException;
 import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.smileflower.santa.profile.model.domain.Email;
 import com.smileflower.santa.profile.model.domain.Profile;
-import com.smileflower.santa.profile.model.dto.UploadImageResponse;
+import com.smileflower.santa.profile.model.dto.*;
 import com.smileflower.santa.profile.repository.ProfileRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Date;
 import java.util.UUID;
 
 @Service
@@ -95,4 +91,36 @@ public class ProfileService {
         }
     }
 
+
+    public ProfileResponse findProfile(Long userIdx) {
+        return null;
+    }
+
+    public PostsResponse findFlags(Long userIdx) {
+        return null;
+
+    }
+
+    public FlagsForMapResponse findFlagsForMap(Long userIdx) {
+        return null;
+
+    }
+
+    public DeleteFlagResponse deleteFlag(Long flagIdx) {
+        return null;
+
+    }
+
+    public ReportFlagResponse reportFlag(Long userIdx,Long flagIdx) {
+        return null;
+    }
+
+
+    public DeletePictureResponse deletePicture(Long pictureIdx) {
+        return null;
+    }
+
+    public PictureResponse createPicture() {
+        return null;
+    }
 }
