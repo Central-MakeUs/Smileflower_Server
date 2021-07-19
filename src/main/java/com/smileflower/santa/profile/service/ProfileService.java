@@ -144,7 +144,8 @@ public class ProfileService {
     }
 
     public ReportFlagResponse reportFlag(int userIdx,Long flagIdx) {
-        return new ReportFlagResponse(flagIdx,profileRepository.reportCountByIdx(profileRepository.report(flagIdx,userIdx)));
+        profileRepository.report(flagIdx,userIdx);
+        return new ReportFlagResponse(flagIdx,profileRepository.reportCountByIdx(flagIdx));
     }
 
 

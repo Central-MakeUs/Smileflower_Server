@@ -159,7 +159,7 @@ public class ProfileJdbcRepository implements ProfileRepository {
 
     @Override
     public int reportCountByIdx(Long flagIdx) {
-        return this.jdbcTemplate.queryForObject("SELECT COUNT(*) FROM report WHERE flagIdx = ?",new Object[]{flagIdx}, Integer.class);
+        return this.jdbcTemplate.queryForObject("SELECT COUNT(*) FROM report WHERE flagIdx = ?",new Object[]{flagIdx}, int.class);
     }
 
     @Override
