@@ -1,17 +1,13 @@
 package com.smileflower.santa.utils;
 
 
-import com.smileflower.santa.config.BaseException;
 import com.smileflower.santa.config.secret.Secret;
 import io.jsonwebtoken.*;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
 import java.util.Date;
 
 import static com.smileflower.santa.config.BaseResponseStatus.*;
