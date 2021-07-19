@@ -7,19 +7,55 @@ plugins {
 
 group = 'com.smileflower'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '11'
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+compileJava.options.encoding = 'UTF-8'
+
 
 repositories {
 	mavenCentral()
-}
 
+}
 dependencyManagement {
 	imports {
 		mavenBom "org.springframework.cloud:spring-cloud-dependencies:Hoxton.SR8"
 	}
 }
 
+
+
 dependencies {
+	implementation 'org.jetbrains:annotations:19.0.0'
+
+
+	// Spring Boot Starter
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+	// Lombok
+	implementation 'org.projectlombok:lombok'
+	compileOnly 'org.projectlombok:lombok:1.18.16'
+	annotationProcessor 'org.projectlombok:lombok:1.18.16'
+
+	// DB
+	runtimeOnly 'mysql:mysql-connector-java' //mysql8
+	//runtimeOnly 'mysql:mysql-connector-java:5.1.47' //mysql5
+	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+	compile 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+
+
+	// Web
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+
+	// Security, Authentication
+	implementation'org.springframework.boot:spring-boot-starter-security'
+	compile group: 'io.jsonwebtoken', name: 'jjwt', version: '0.7.0'
+	compile 'io.jsonwebtoken:jjwt:0.9.0'
+
+	implementation'org.springframework.boot:spring-boot-starter'
+	compile'org.springframework.boot:spring-boot-starter-web'
+
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
 	runtimeOnly 'mysql:mysql-connector-java'
@@ -48,6 +84,8 @@ dependencies {
 	//spring-starter-aws
 	implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-aws', version: '2.2.6.RELEASE'
 	annotationProcessor group: 'org.springframework.boot', name: 'spring-boot-configuration-processor'
+
+
 
 }
 
