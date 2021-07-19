@@ -170,9 +170,25 @@ public class ProfileJdbcRepository implements ProfileRepository {
     }
 
     @Override
+    public int updateImageUrlByIdx(Long userIdx, String filename) {
+        String query = "update user set userImageUrl = ? where userIdx = ? ";
+        Object[] params = new Object[]{filename, userIdx};
+        return this.jdbcTemplate.update(query,params);
+    }
+
+    @Override
     public int deleteImageUrlByEmail(String email) {
         String query = "update user set userImageUrl = null where emailId = ? ";
         String param = email;
         return this.jdbcTemplate.update(query,param);
     }
+
+    @Override
+    public int deleteImageUrlByIdx(Long userIdx) {
+        String query = "update user set userImageUrl = null where userIdx = ? ";
+        Long param = userIdx;
+        return this.jdbcTemplate.update(query,param);
+    }
+
+
 }

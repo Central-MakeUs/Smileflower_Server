@@ -34,5 +34,10 @@ public interface ProfileRepository {
     int reportCountByIdx(Long flagIdx);
 
     int updateImageUrlByEmail(String email,String filename);
+
+    int updateImageUrlByIdx(Long userIdx, String filename);
+
     int deleteImageUrlByEmail(String email);
+
+    int deleteImageUrlByIdx(Long userIdx);
 }

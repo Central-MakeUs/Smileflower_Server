@@ -100,7 +100,7 @@ public class ProfileController {
     public ApiResult<PictureResponse> createPicture(@RequestBody CreatePictureRequest imageUrl) {
 
         return ApiResult.OK(
-                profileService.createPicture(userIdx,imageUrl);
+                profileService.createPicture(userIdx,imageUrl)
         );
 
     }
