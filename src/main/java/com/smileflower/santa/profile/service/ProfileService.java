@@ -2,6 +2,7 @@ package com.smileflower.santa.profile.service;
 
 import com.amazonaws.services.kms.model.NotFoundException;
 import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.smileflower.santa.profile.model.domain.Picture;
 import com.smileflower.santa.profile.model.domain.Profile;
 import com.smileflower.santa.profile.model.dto.*;
 import com.smileflower.santa.profile.repository.ProfileRepository;
@@ -10,6 +11,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -91,36 +94,61 @@ public class ProfileService {
         }
     }
 
-
     public ProfileResponse findProfile(Long userIdx) {
-        return null;
+        List<FlagResponse> flagsResponse = profileRepository.findFlagsByIdx(userIdx);
+        List<Picture> pictures = profileRepository.findPicturesByIdx(userIdx);
+        List<PictureResponse> picturesResponse = new ArrayList<PictureResponse>();
+        int flagsResponseCnt = flagsResponse.size();
+        int level = 0;
+        if (flagsResponseCnt<=2){
+            level = flagsResponseCnt;
+        }
+        else{
+            level = (flagsResponseCnt+2)/2;
+        }
+        for(int i=0;i<pictures.size();i++){
+            picturesResponse.add(new PictureResponse(pictures.get(i).getPictureIdx(),pictures.get(i).getUserIdx(),pictures.get(i).getImageUrl(),pictures.get(i).getCreatedAt()));
+        }
+        ProfileResponse profileResponse = new ProfileResponse(userIdx,profileRepository.findNameByIdx(userIdx),level,flagsResponseCnt,flagsResponseCnt+picturesResponse.size(),flagsResponse,picturesResponse);
+
+        return profileResponse;
     }
 
     public PostsResponse findFlags(Long userIdx) {
-        return null;
+        List<FlagResponse> flagsResponse = profileRepository.findFlagsByIdx(userIdx);
+        List<Picture> pictures = profileRepository.findPicturesByIdx(userIdx);
+        List<PictureResponse> picturesResponse = new ArrayList<PictureResponse>();
+        for(int i=0;i<pictures.size();i++){
+            picturesResponse.add(new PictureResponse(pictures.get(i).getPictureIdx(),pictures.get(i).getUserIdx(),pictures.get(i).getImageUrl(),pictures.get(i).getCreatedAt()));
+        }
+
+        return new PostsResponse(userIdx,profileRepository.findNameByIdx(userIdx),flagsResponse,picturesResponse);
 
     }
 
-    public FlagsForMapResponse findFlagsForMap(Long userIdx) {
-        return null;
-
+    public List<FlagsForMapResponse> findFlagsForMap(Long userIdx) {
+        return profileRepository.findFlagsForMapByIdx(userIdx);
     }
 
     public DeleteFlagResponse deleteFlag(Long flagIdx) {
-        return null;
+        return new DeleteFlagResponse(profileRepository.deleteFlagByIdx(flagIdx));
 
     }
 
     public ReportFlagResponse reportFlag(Long userIdx,Long flagIdx) {
-        return null;
+        return new ReportFlagResponse(flagIdx,profileRepository.reportCountByIdx(profileRepository.report(flagIdx,userIdx)));
     }
 
 
     public DeletePictureResponse deletePicture(Long pictureIdx) {
-        return null;
+        return new DeletePictureResponse(profileRepository.deletePictureByIdx(pictureIdx));
     }
 
-    public PictureResponse createPicture() {
-        return null;
+    public int createPicture(Long userIdx,String imageUrl) {
+        return profileRepository.createPicture(userIdx, imageUrl);
+    }
+
+    public ResultResponse findResult(Long userIdx) {
+        return new ResultResponse(profileRepository.findFlagCountByIdx(userIdx));
     }
 }

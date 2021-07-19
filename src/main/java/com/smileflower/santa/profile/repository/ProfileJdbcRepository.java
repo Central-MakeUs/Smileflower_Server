@@ -2,6 +2,8 @@ package com.smileflower.santa.profile.repository;
 
 
 import com.smileflower.santa.profile.model.domain.*;
+import com.smileflower.santa.profile.model.dto.FlagResponse;
+import com.smileflower.santa.profile.model.dto.FlagsForMapResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -43,31 +45,65 @@ public class ProfileJdbcRepository implements ProfileRepository {
     }
 
     @Override
-    public Optional<String> findNameByIdx(Long userIdx) {
-        String query = "select name from user where userIdx =?";
-        String name = this.jdbcTemplate.queryForObject(query,new Object[]{userIdx},String.class);
+    public Optional<Profile> findByIdx(Long userIdx) {
+        String query = "select * from user where userIdx =?";
+        Long param = userIdx;
+        List<Profile> user = this.jdbcTemplate.query(query,
+                (rs, rowNum) -> new Profile(
+                        rs.getLong("userIdx"),
+                        new Email(rs.getString("emailId")),
+                        null,
+                        rs.getString("userImageUrl"),
+                        rs.getTimestamp("createdAt").toLocalDateTime(),
+                        rs.getTimestamp("updatedAt").toLocalDateTime(),
+                        rs.getString("name")),
+                param);
 
-        return ofNullable(name==null ? null : name);
+        return ofNullable(user.isEmpty() ? null : user.get(0));
     }
 
     @Override
-    public Optional<List<Flag>> findFlagsByIdx(Long userIdx) {
-        String query = "select flag.*, mountain.name, COUNT(flag.mountainIdx) As cnt from flag Left JOIN mountain ON flag.mountainIdx = mountain.mountainIdx group by flag.mountainIdx where userIdx =?";
+    public String findNameByIdx(Long userIdx) {
+        String query = "select name from user where userIdx =?";
+        String name = this.jdbcTemplate.queryForObject(query,new Object[]{userIdx},String.class);
+
+        return name;
+    }
+
+    @Override
+    public List<FlagResponse> findFlagsByIdx(Long userIdx) {
+        String query = "SELECT a.flagIdx, a.userIdx, a.mountainIdx, a.createdAt, a.pictureUrl, b.cnt, b.name from flag a left join (Select ANY_VALUE(f.userIdx) as userIdx, ANY_VALUE(f.mountainIdx) as mountainIdx, COUNT(f.mountainIdx) as cnt, m.name  from flag f LEFT JOIN mountain m ON f.mountainIdx = m.mountainIdx group by f.mountainIdx) b on a.mountainIdx = b.mountainIdx where a.useridx = ?";
         Object[] param = new Object[]{userIdx};
-        List<Flag> flags = this.jdbcTemplate.query(query,param,(rs,rowNum) -> new Flag(
+        List<FlagResponse> flags = this.jdbcTemplate.query(query,param,(rs,rowNum) -> new FlagResponse(
                 rs.getLong("flagIdx"),
                 rs.getLong("userIdx"),
                 rs.getLong("mountainIdx"),
                 rs.getTimestamp("createAt").toLocalDateTime(),
-                rs.getTimestamp("updatedAt").toLocalDateTime(),
-                rs.getString("status"),
-                rs.getString("pictureUrl")
+                rs.getString("pictureUrl"),
+                rs.getInt("cnt"),
+                rs.getString("name")
         ));
-        return ofNullable(flags.isEmpty() ? null : flags);
+        return flags;
     }
 
     @Override
-    public Optional<List<Picture>> findPicturesByIdx(Long userIdx) {
+    public List<FlagsForMapResponse> findFlagsForMapByIdx(Long userIdx) {
+        String query = "Select ANY_VALUE(f.userIdx) as userIdx, ANY_VALUE(f.mountainIdx) as mountainIdx, COUNT(f.mountainIdx) as cnt, m.name, m.imageUrl, m.lat, m.lng, m.address from flag f LEFT JOIN mountain m ON f.mountainIdx = m.mountainIdx where f.useridx = ? group by f.mountainIdx";
+        Object[] param = new Object[]{userIdx};
+        List<FlagsForMapResponse> flags = this.jdbcTemplate.query(query,param,(rs,rowNum) -> new FlagsForMapResponse(
+                rs.getLong("userIdx"),
+                rs.getLong("mountainIdx"),
+                rs.getString("imageUrl"),
+                rs.getDouble("lat"),
+                rs.getDouble("lng"),
+                rs.getInt("cnt"),
+                rs.getString("address")
+        ));
+        return flags;
+    }
+
+    @Override
+    public List<Picture> findPicturesByIdx(Long userIdx) {
         String query = "select * from picture where userIdx =?";
         Object[] param = new Object[]{userIdx};
         List<Picture> pictures = this.jdbcTemplate.query(query,param,(rs,rowNum) -> new Picture(
@@ -78,7 +114,7 @@ public class ProfileJdbcRepository implements ProfileRepository {
                 rs.getTimestamp("updatedAt").toLocalDateTime(),
                 rs.getString("status")
         ));
-        return ofNullable(pictures.isEmpty() ? null : pictures);
+        return pictures;
     }
 
     @Override
@@ -93,7 +129,7 @@ public class ProfileJdbcRepository implements ProfileRepository {
 
     @Override
     public int findFlagCountByIdx(Long userIdx) {
-        return 0;
+        return this.jdbcTemplate.queryForObject("SELECT COUNT(*) FROM flag WHERE userIdx = ?",new Object[]{userIdx}, Integer.class);
     }
 
     @Override
@@ -105,17 +141,25 @@ public class ProfileJdbcRepository implements ProfileRepository {
     }
 
     @Override
-    public int report(Long flagIdx, Long userIdx) {
+    public boolean deletePictureByIdx(Long flagIdx) {
+        String query = "delete from picture where pictureIdx = ?";
+        Object[] params = new Object[]{flagIdx};
+        int changedCnt = this.jdbcTemplate.update(query,params);
+        return changedCnt==1 ? true : false;
+    }
+
+    @Override
+    public Long report(Long flagIdx, Long userIdx) {
         String query = "insert into picture (userIdx, flagIdx) VALUES (?,?)";
         Object[] params = new Object[]{userIdx,flagIdx};
         this.jdbcTemplate.update(query, params);
         String lastInsertIdQuery = "select last_insert_id()";
-        return this.jdbcTemplate.queryForObject(lastInsertIdQuery,int.class);
+        return this.jdbcTemplate.queryForObject(lastInsertIdQuery,Long.class);
     }
 
     @Override
     public int reportCountByIdx(Long flagIdx) {
-        return 0;
+        return this.jdbcTemplate.queryForObject("SELECT COUNT(*) FROM report WHERE flagIdx = ?",new Object[]{flagIdx}, Integer.class);
     }
 
     @Override

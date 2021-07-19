@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 @RequestMapping("/api/profile")
 @RestController
 public class ProfileController {
@@ -58,11 +60,17 @@ public class ProfileController {
         return ApiResult.OK(
                 profileService.findFlags(userIdx)
         );
+    }
 
+    @GetMapping("/{userIdx}/result")
+    public ApiResult<ResultResponse> result(@PathVariable("userIdx") Long userIdx) {
+        return ApiResult.OK(
+                profileService.findResult(userIdx)
+        );
     }
 
     @GetMapping("/{userIdx}/flags/map")
-    public ApiResult<FlagsForMapResponse> flagsForMap(@PathVariable("userIdx") Long userIdx) {
+    public ApiResult<List<FlagsForMapResponse>> flagsForMap(@PathVariable("userIdx") Long userIdx) {
 
         return ApiResult.OK(
                 profileService.findFlagsForMap(userIdx)
@@ -89,10 +97,10 @@ public class ProfileController {
     }
 
     @PostMapping("/picture")
-    public ApiResult<PictureResponse> createPicture() {
+    public ApiResult<PictureResponse> createPicture(@RequestBody CreatePictureRequest imageUrl) {
 
         return ApiResult.OK(
-                profileService.createPicture()
+                profileService.createPicture(userIdx,imageUrl);
         );
 
     }

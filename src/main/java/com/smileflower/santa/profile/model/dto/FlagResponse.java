@@ -8,13 +8,17 @@ public class FlagResponse {
     private Long mountainIdx;
     private LocalDateTime createdAt;
     private String pictureUrl;
+    private int flagCount;
+    private String name;
 
-    public FlagResponse(Long flagIdx, Long userIdx, Long mountainIdx, LocalDateTime createdAt, String pictureUrl) {
+    public FlagResponse(Long flagIdx, Long userIdx, Long mountainIdx,  LocalDateTime createdAt, String pictureUrl,int flagCount,String name) {
         this.flagIdx = flagIdx;
         this.userIdx = userIdx;
         this.mountainIdx = mountainIdx;
         this.createdAt = createdAt;
         this.pictureUrl = pictureUrl;
+        this.flagCount = flagCount;
+        this.name = name;
     }
 
     public Long getFlagIdx() {
@@ -55,5 +59,21 @@ public class FlagResponse {
 
     public void setPictureUrl(String pictureUrl) {
         this.pictureUrl = pictureUrl;
+    }
+
+    public int getFlagCount() {
+        return flagCount;
+    }
+
+    public void setFlagCount(int flagCount) {
+        this.flagCount = flagCount;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

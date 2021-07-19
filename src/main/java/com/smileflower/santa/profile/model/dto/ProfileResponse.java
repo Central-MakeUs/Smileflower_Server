@@ -1,5 +1,7 @@
 package com.smileflower.santa.profile.model.dto;
 
+import com.smileflower.santa.profile.model.domain.Picture;
+
 import java.util.List;
 
 public class ProfileResponse {
@@ -9,14 +11,16 @@ public class ProfileResponse {
     private int flagCount;
     private int postCount;
     private List<FlagResponse> flags;
+    private List<PictureResponse> pictures;
 
-    public ProfileResponse(Long userIdx, String name, int level, int flagCount, int postCount, List<FlagResponse> flags) {
+    public ProfileResponse(Long userIdx, String name, int level, int flagCount, int postCount, List<FlagResponse> flags,List<PictureResponse> pictures) {
         this.userIdx = userIdx;
         this.name = name;
         this.level = level;
         this.flagCount = flagCount;
         this.postCount = postCount;
         this.flags = flags;
+        this.pictures = pictures;
     }
 
     public Long getUserIdx() {
@@ -65,5 +69,13 @@ public class ProfileResponse {
 
     public void setFlags(List<FlagResponse> flags) {
         this.flags = flags;
+    }
+
+    public List<PictureResponse> getPictures() {
+        return pictures;
+    }
+
+    public void setPictures(List<PictureResponse> pictures) {
+        this.pictures = pictures;
     }
 }
