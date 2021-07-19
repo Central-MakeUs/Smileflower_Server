@@ -150,7 +150,7 @@ public class ProfileJdbcRepository implements ProfileRepository {
 
     @Override
     public Long report(Long flagIdx, int userIdx) {
-        String query = "insert into picture (userIdx, flagIdx) VALUES (?,?)";
+        String query = "insert into report (userIdx, flagIdx) VALUES (?,?)";
         Object[] params = new Object[]{userIdx,flagIdx};
         this.jdbcTemplate.update(query, params);
         String lastInsertIdQuery = "select last_insert_id()";
