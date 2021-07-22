@@ -36,7 +36,8 @@ public class MountainProvider {
     public List<GetMountainRes> getMountain(int userIdx) throws BaseException {
         List<GetMountainRes> getMountainRes = mountainDao.getMountain(userIdx);
         for(int i=0;i<getMountainRes.size();i++){
-            getMountainRes.get(i).setMountainImg(s3Service.getFileUrl(getMountainRes.get(i).getMountainImg()));
+            if(getMountainRes.get(i).getMountainImg()!=null)
+                getMountainRes.get(i).setMountainImg(s3Service.getFileUrl(getMountainRes.get(i).getMountainImg()));
         }
         return getMountainRes;
     }
@@ -81,7 +82,8 @@ public class MountainProvider {
         GetInfoPage getInfoPage = new GetInfoPage();
 
         GetInfoRes getInfoRes = mountainDao.getInfo(userIdx,mountainIdx);
-        getInfoRes.setMountainImg(s3Service.getFileUrl(getInfoRes.getMountainImg()));
+        if(getInfoRes.getMountainImg()!=null)
+            getInfoRes.setMountainImg(s3Service.getFileUrl(getInfoRes.getMountainImg()));
 
         getInfoPage.setInfo(getInfoRes);
 
