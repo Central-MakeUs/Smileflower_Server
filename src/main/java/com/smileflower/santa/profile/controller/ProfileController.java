@@ -48,6 +48,7 @@ public class ProfileController {
 
     @GetMapping("/{userIdx}")
     public ApiResult<ProfileResponse> profile(@PathVariable("userIdx") int userIdx) {
+        jwtService.getUserIdxV2();
         return ApiResult.OK(
                 profileService.findProfile(userIdx)
         );
@@ -55,6 +56,7 @@ public class ProfileController {
 
     @GetMapping("/{userIdx}/posts")
     public ApiResult<PostsResponse> flags(@PathVariable("userIdx") int userIdx) {
+        jwtService.getUserIdxV2();
         return ApiResult.OK(
                 profileService.findPosts(userIdx)
         );
@@ -62,6 +64,7 @@ public class ProfileController {
 
     @GetMapping("/{userIdx}/result")
     public ApiResult<ResultResponse> result(@PathVariable("userIdx") int userIdx) {
+        jwtService.getUserIdxV2();
         return ApiResult.OK(
                 profileService.findResult(userIdx)
         );
@@ -69,6 +72,7 @@ public class ProfileController {
 
     @GetMapping("/{userIdx}/flags/map")
     public ApiResult<List<FlagsForMapResponse>> flagsForMap(@PathVariable("userIdx") int userIdx) {
+        jwtService.getUserIdxV2();
         return ApiResult.OK(
                 profileService.findFlagsForMap(userIdx)
         );
@@ -77,7 +81,7 @@ public class ProfileController {
 
     @DeleteMapping("/{userIdx}/flags/{flagIdx}")
     public ApiResult<DeleteFlagResponse> deleteFlag(@PathVariable("flagIdx") Long flagIdx) {
-        int userIdx = jwtService.getUserIdxV2();
+        jwtService.getUserIdxV2();
         return ApiResult.OK(
                 profileService.deleteFlag(flagIdx)
         );
@@ -86,7 +90,7 @@ public class ProfileController {
 
     @DeleteMapping("/{userIdx}/pictures/{pictureIdx}")
     public ApiResult<DeletePictureResponse> deletePicture(@PathVariable("pictureIdx") Long pictureIdx) {
-
+        jwtService.getUserIdxV2();
         return ApiResult.OK(
                 profileService.deletePicture(pictureIdx)
         );
@@ -104,7 +108,7 @@ public class ProfileController {
 
     @PostMapping("/{userIdx}/flags/{flagIdx}/report")
     public ApiResult<ReportFlagResponse> reportFlag(@PathVariable("userIdx") int userIdx, @PathVariable("flagIdx") Long flagIdx) {
-
+        jwtService.getUserIdxV2();
         return ApiResult.OK(
                 profileService.reportFlag(userIdx,flagIdx)
         );
