@@ -16,4 +16,5 @@ public class GetInfoRes {
     private String high;
     private String hot;
     private String pick;
+    private int altitude;
 }

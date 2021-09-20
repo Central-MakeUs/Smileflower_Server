@@ -184,7 +184,7 @@ public class MountainDao {
                         "                                           else 5 end as difficulty\n" +
                         "        ,\n" +
                         "       concat(m.high, 'm')                            as high,\n" +
-                        "\n" +
+                        " m.high as altitude,\n" +
                         "       case when a.hot > 2 then '인기' else null end    as hot,\n" +
                         "       case when b.status = 'T' then 'T' else 'F' end as pick\n" +
                         "\n" +
@@ -205,15 +205,17 @@ public class MountainDao {
                         rs.getInt("difficulty"),
                         rs.getString("high"),
                         rs.getString("hot"),
-                        rs.getString("pick")),
+                        rs.getString("pick"),
+                        rs.getInt("altitude")),
                 userIdx,mountainIdx);
     }
 
     public GetMapRes getMap(int mountainIdx){
-        return this.jdbcTemplate.queryForObject("select  latitude , longitude from mountain where mountainIdx =?",
+        return this.jdbcTemplate.queryForObject("select  latitude , longitude,high from mountain where mountainIdx =?",
                 (rs, rowNum) -> new GetMapRes(
                         rs.getDouble("latitude"),
-                        rs.getDouble("longitude")),
+                        rs.getDouble("longitude"),
+                        rs.getInt("high")),
                 mountainIdx);
     }
 
