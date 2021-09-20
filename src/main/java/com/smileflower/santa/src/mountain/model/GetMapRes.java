@@ -10,4 +10,5 @@ import lombok.Setter;
 public class GetMapRes {
     private double latitude;
     private double longitude;
+    private int high;
 }
