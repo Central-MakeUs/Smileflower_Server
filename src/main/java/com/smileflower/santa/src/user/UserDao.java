@@ -55,6 +55,14 @@ public class UserDao {
                 email);
     }
 
+    public int deleteUser(int userIdx) {
+        String query = "delete from user where userIdx = ?";
+        Object[] params = new Object[]{userIdx};
+        int changedCnt = this.jdbcTemplate.update(query,params);
+        return changedCnt;
+    }
+
+
     public char getAuto(int userIdx){
         return this.jdbcTemplate.queryForObject("select status from loghistory where userIdx=? ORDER BY createdAt DESC LIMIT 1",char.class,
                 userIdx);
@@ -62,6 +70,13 @@ public class UserDao {
     public String getEmailId(int userIdx){
         return this.jdbcTemplate.queryForObject("select emailId from user where userIdx=?",String.class,
                 userIdx);
+    }
+    public int checkUserIdx(int userIdx){
+        String checkUserQuery = "select exists(select userIdx from user where userIdx = ?)";
+        int checkUserParams = userIdx;
+        return this.jdbcTemplate.queryForObject(checkUserQuery,
+                int.class,
+                checkUserParams);
     }
 
 

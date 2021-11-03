@@ -122,6 +122,16 @@ public class UserService {
         }
     }
 
+    public DeleteUserRes deleteUser(int userIdx) throws BaseException {
+
+        if (userProvider.checkUserIdx(userIdx)!=1) {
+            throw new BaseException(INVALID_USER);
+        }
+        int delete = userDao.deleteUser(userIdx);
+
+        return new DeleteUserRes(userIdx);
+
+    }
 }
 
 

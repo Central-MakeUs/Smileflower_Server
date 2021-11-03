@@ -38,6 +38,13 @@ public class UserProvider {
         this.userDao = userDao;
         this.jwtService = jwtService;
     }
+    public int checkUserIdx(int userIdx) throws BaseException{
+        try{
+            return userDao.checkUserIdx(userIdx);
+        } catch (Exception exception){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
 
 
 

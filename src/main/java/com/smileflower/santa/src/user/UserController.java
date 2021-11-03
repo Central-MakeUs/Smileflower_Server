@@ -174,6 +174,25 @@ public class UserController {
     }
 
 
+    @ResponseBody
+    @DeleteMapping("/{userIdx}")
+    public BaseResponse<DeleteUserRes> deleteUser(@PathVariable("userIdx") int userIdx) {
+
+        try {
+            int userIdxByJwt = jwtService.getUserIdx();
+
+            if (userIdx != userIdxByJwt) {
+
+                return new BaseResponse<>(INVALID_USER_JWT);
+            }
+
+            DeleteUserRes deleteUserRes = userService.deleteUser(userIdx);
+
+            return new BaseResponse<>(deleteUserRes);
+        } catch (BaseException exception) {
+            return new BaseResponse<>((exception.getStatus()));
+        }
+    }
 
 
 }
