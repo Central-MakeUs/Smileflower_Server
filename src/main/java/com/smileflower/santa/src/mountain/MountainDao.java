@@ -32,7 +32,7 @@ public class MountainDao {
                         "                                           else 5 end as difficulty\n" +
                         "                                        ,\n" +
                         "                                       concat('(', m.high, 'm)') as high,\n" +
-                        "                                       case when a.hot > 2 then '인기' else null end as hot,\n" +
+                        "                                       case when a.hot > 10 then '인기' else null end as hot,\n" +
                         "                                       case when b.status = 'T' then 'T' else 'F' end as pick\n" +
                         "                                from mountain m\n" +
                         "                                         left join difficulty d on m.mountainIdx = d.mountainIdx\n" +
@@ -185,7 +185,7 @@ public class MountainDao {
                         "        ,\n" +
                         "       concat(m.high, 'm')                            as high,\n" +
                         " m.high as altitude,\n" +
-                        "       case when a.hot > 2 then '인기' else null end    as hot,\n" +
+                        "       case when a.hot > 10 then '인기' else null end    as hot,\n" +
                         "       case when b.status = 'T' then 'T' else 'F' end as pick\n" +
                         "\n" +
                         "from mountain m\n" +
